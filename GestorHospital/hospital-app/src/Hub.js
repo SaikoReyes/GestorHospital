@@ -32,7 +32,7 @@ const DoctorView = () => {
   return (
     <div style={styles.container}>
       <div style={styles.actionsContainer}>
-        <Link to="/schedule-appointment" style={styles.action}>Schedule Appointment</Link>
+        <Link to="/agendar-cita" style={styles.action}>Schedule Appointment</Link>
         
       </div>
     </div>
@@ -42,7 +42,7 @@ const ReceptionistView = () => {
   return (
     <div style={styles.container}>
       <div style={styles.actionsContainer}>
-        <Link to="/schedule-appointment" style={styles.action}>Schedule Appointment</Link>
+        <Link to="/agendar-cita" style={styles.action}>Schedule Appointment</Link>
         
       </div>
     </div>
@@ -52,7 +52,7 @@ const AdminView = () => {
   return (
     <div style={styles.container}>
       <div style={styles.actionsContainer}>
-        <Link to="/schedule-appointment" style={styles.action}>Schedule Appointment</Link>
+        <Link to="/agendar-cita" style={styles.action}>Schedule Appointment</Link>
         <Link to="/cancel-appointment" style={styles.action}>Cancel Appointment</Link>
         <Link to="/register-doctor" style={styles.action}>Register Doctor</Link>
         <Link to="/unsubscribe-user" style={styles.action}>Unsubscribe User</Link>
@@ -64,7 +64,7 @@ const PatientView = () => {
   return (
     <div style={styles.container}>
       <div style={styles.actionsContainer}>
-        <Link to="/schedule-appointment" style={styles.action}>Schedule Appointment</Link>
+        <Link to="/agendar-cita" style={styles.action}>Schedule Appointment</Link>
         <Link to="/cancel-appointment" style={styles.action}>Cancel Appointment</Link>
         
       </div>
