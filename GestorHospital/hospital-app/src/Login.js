@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { Container, Form, Button, Row } from 'react-bootstrap';
+
 
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate(); // Hook to navigate to different routes
+  const navigate = useNavigate();
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -14,99 +16,90 @@ function Login() {
         username: username,
         password: password,
       });
-      // If login is successful, redirect to the successful-login page
       if (response.data) {
         try{
-        alert('Login successful'); // Consider replacing with a more robust solution
+        alert('Inicio de sesión exitoso');
+        const userId = response.data.userId;
+        sessionStorage.setItem('userId', userId);
         const roleResponse = await axios.post(`http://localhost:3001/get-user-role/${username}`);
         const userRole = roleResponse.data.role;
         navigate('/hub', { state: { username: username , role: userRole }});
         }catch (error) {
-          console.error('Error fetching user role: ', error.response || error);
+          console.error('Error obteniendo información del usuario: ', error.response || error);
         }
       }
     } catch (error) {
-      // Handle errors (e.g., wrong credentials, server issues)
-      alert('Login failed: ' + (error.response ? error.response.data.message : error.message)); // Consider replacing with a more robust solution
+      alert('Login failed: ' + (error.response ? error.response.data.message : error.message));
     }
   };
 
   return (
-    <div style={styles.container}>
-      <form style={styles.form} onSubmit={handleLogin}>
-        <h2 style={styles.title}>Login</h2>
+    <div style={{ 
+      backgroundImage: 'url(/background-image.png)',
+      backgroundSize: 'cover',
+      height: '100vh',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center'
+    }}>
+      <Row>
+      <Container style={styles.formContainer}>
+        <Form style={styles.form} onSubmit={handleLogin}>
+          <h2 style={styles.title}>Inicio de sesión</h2>
+          <Form.Group>
+            <Form.Label>Usuario</Form.Label>
+            <Form.Control 
+              type="text" 
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Ingrese su usuario"
+            />
+          </Form.Group>
 
-        <div style={styles.inputGroup}>
-          <label style={styles.label} htmlFor="username">Username</label>
-          <input 
-            style={styles.input} 
-            type="text" 
-            id="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder="Enter your username" 
-          />
-        </div>
+          <Form.Group>
+            <Form.Label>Contraseña</Form.Label>
+            <Form.Control 
+              type="password" 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Ingrese su contraseña"
+            />
+          </Form.Group>
 
-        <div style={styles.inputGroup}>
-          <label style={styles.label} htmlFor="password">Password</label>
-          <input 
-            style={styles.input} 
-            type="password" 
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter your password" 
-          />
-        </div>
-
-        <button type="submit" style={styles.button}>Login</button>
-      </form>
+          <Button type="submit" style={styles.button}>Acceder</Button>
+        </Form>
+        <br>
+        </br>
+        <center>¿Aún no tienes cuenta?</center>
+        <center>
+        <Button variant="primary" style={styles.action} onClick={() => navigate('/registro')}>Registrate</Button>
+        </center>
+        
+      </Container>
+      
+      
+      </Row>
     </div>
   );
 }
 
-// Basic inline styles
 const styles = {
-  container: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100vh',
-    backgroundColor: '#f7f7f7'
+  formContainer: {
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    padding: '40px',
+    borderRadius: '8px',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.05)'
   },
   form: {
-    padding: '30px',
-    borderRadius: '8px',
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-    backgroundColor: 'white',
-    width: '310px'
+    width: '100%'
   },
   title: {
     textAlign: 'center',
-    marginBottom: '20px'
-  },
-  inputGroup: {
-    marginBottom: '25px'
-  },
-  label: {
-    display: 'block',
-    marginBottom: '5px'
-  },
-  input: {
-    width: '100%',
-    padding: '10px',
-    border: '1px solid #ccc',
-    borderRadius: '4px'
+    marginBottom: '30px'
   },
   button: {
-    width: '100%',
-    padding: '10px',
-    border: 'none',
-    borderRadius: '4px',
-    backgroundColor: '#007bff',
-    color: 'white',
-    cursor: 'pointer'
+    marginTop: '20px',
+    width: '100%'
   }
 };
 

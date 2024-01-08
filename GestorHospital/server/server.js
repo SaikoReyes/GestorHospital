@@ -45,7 +45,7 @@ app.post('/login', async (req, res) => {
         if (result.recordset.length > 0) {
             res.json({ message: 'Login successful', user: result.recordset[0] });
         } else {
-            res.status(401).json({ message: 'Login failed' });
+            res.status(401).json({ message: 'Error al iniciar sesión' });
         }
         
         pool.close();
