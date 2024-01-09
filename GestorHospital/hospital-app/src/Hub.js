@@ -84,7 +84,7 @@ const ReceptionistView = () => {
   return (
     <div style={styles.actionsContainer}>
      <Row>
-    {/* Columna izquierda */}
+    
     <Col>
       <Button variant="primary" style={styles.action} onClick={() => navigate('/rec-agendar-cita')}>Agendar cita a paciente</Button>
       <p style={styles.actionDescription}>Programar nuevas citas para los pacientes.</p>
@@ -96,7 +96,7 @@ const ReceptionistView = () => {
       <p style={styles.actionDescription}>Pagar una cita ya programada.</p>
     </Col>
 
-    {/* Columna derecha */}
+    
     <Col>
       <Button variant="primary" style={styles.action} onClick={() => navigate('/alta-doctor')}>Alta doctor</Button>
       <p style={styles.actionDescription}>Dar de alta un nuevo doctor.</p>

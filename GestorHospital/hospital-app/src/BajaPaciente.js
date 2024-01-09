@@ -44,7 +44,7 @@ const handleDeletePatient = async (patientId) => {
       }
 
 
-      // Actualizar la lista de pacientes (opcional)
+      
       
     } catch (error) {
       console.error('Error al dar de baja al paciente:', error);
