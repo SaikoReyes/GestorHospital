@@ -36,19 +36,19 @@ function CrearReceta() {
     const [idDoctor, setIdDoctor] = useState('');
     const [responseMessage, setResponseMessage] = useState('');
     const [appointmentId, setAppointmentId] = useState('');
-    const medicamentosMuestra = ["Paracetamol", "Ibuprofeno", "Amoxicilina"]; // Añade más según sea necesario
+    const medicamentosMuestra = ["Paracetamol", "Ibuprofeno", "Amoxicilina"]; 
   
-    // Obtener idPaciente de los estados anteriores
+    
     const [idPaciente, setIdPaciente] = useState(location.state ? location.state.idPaciente : '');
   
     useEffect(() => {
       if (location.state && location.state.appointmentId && location.state.idPaciente) {
         setAppointmentId(location.state.appointmentId);
         setIdPaciente(location.state.idPaciente);
-        setIdDoctor(sessionStorage.getItem('userId'));
+        setIdDoctor(sessionStorage.getItem('idPersona'));
         console.log(location.state.appointmentId);
         console.log(location.state.idPaciente);
-        console.log(sessionStorage.getItem('userId'));
+        console.log(sessionStorage.getItem('idPersona'));
       }
     }, [location]);
   
@@ -72,7 +72,7 @@ function CrearReceta() {
             alert(diagnostico+' '+instrucciones+' '+medicamentos+' '+tratamiento);
         }
         
-        // Restablecer el formulario u otras acciones
+        
       } catch (error) {
         console.error('Error al enviar la receta:', error);
         alert('Error al enviar la receta');

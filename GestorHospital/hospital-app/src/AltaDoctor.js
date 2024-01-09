@@ -61,7 +61,7 @@ function AltaDoctor() {
     const obtenerEspecialidades = async () => {
       try {
         const response = await axios.get('https://dbstapi.azurewebsites.net/Doctor/ObtenerEspecialidades');
-        setEspecialidades(response.data); // Utiliza directamente la respuesta de la API
+        setEspecialidades(response.data);
       } catch (error) {
         console.error('Error al obtener especialidades:', error);
       }
@@ -77,7 +77,7 @@ function AltaDoctor() {
   const navigate = useNavigate();
   const handleSubmit = async(e) => {
     e.preventDefault();
-    // Aquí manejarías la lógica para enviar los datos al backend
+ 
     console.log(doctorData);
     const formattedDate = formatDate(doctorData.fechaNacimiento);
 
@@ -93,9 +93,9 @@ function AltaDoctor() {
             telefono: doctorData.telefono,
             sueldo: doctorData.sueldo,
             turno: doctorData.turno,
-            idEspecialidad: doctorData.especialidad, // Asegúrate de que este campo se llene con un ID y no con el nombre de la especialidad
+            idEspecialidad: doctorData.especialidad, 
             nombreUsuario: doctorData.NombreUsuario,
-            password: doctorData.password // Considera hashear esta contraseña si es necesario
+            password: doctorData.password 
           }
         });
         
@@ -110,10 +110,6 @@ function AltaDoctor() {
       }
   };
 
-  // Agrega las especialidades disponibles
-
-
-  // Turnos como ejemplo
   const turnos = ["Matutino", "Vespertino", "Nocturno"];
 
   return (
@@ -127,10 +123,9 @@ function AltaDoctor() {
         </Row>
         <Form onSubmit={handleSubmit}>
           <Row>
-            {/* Columna izquierda */}
+
             <Col md={6}>
-              {/* Aquí irían los Form.Group para nombre, apellido paterno, etc. */}
-              {/* Ejemplo para el campo de nombre */}
+
               <Form.Group as={Row} className="mb-3">
         <Form.Label column sm="2">Nombre</Form.Label>
         <Col sm="10">
@@ -229,13 +224,11 @@ function AltaDoctor() {
     </Form.Group>
 
               
-              {/* Repite para otros campos en la columna izquierda */}
+
             </Col>
 
-            {/* Columna derecha */}
             <Col md={6}>
-              {/* Ejemplo para el campo de especialidad */}
-             
+
 
               <Form.Group as={Row} className="mb-3">
           <Form.Label column sm="2">Especialidad</Form.Label>
@@ -271,8 +264,8 @@ function AltaDoctor() {
             value={doctorData.sueldo}
             onChange={handleInputChange}
             placeholder="Ingrese el sueldo"
-            min="99" // Puedes establecer un mínimo si es necesario
-            step="0.01" // Asume que se pueden tener centavos en el sueldo
+            min="99" 
+            step="0.01" 
             max="9999999999"
             />
         </Col>
@@ -313,10 +306,10 @@ function AltaDoctor() {
           </Row>
 
       
-              {/* Repite para otros campos en la columna derecha */}
+
             </Col>
           </Row>
-          {/* ... más filas y columnas según sea necesario ... */}
+
          
         </Form>
       </Container>

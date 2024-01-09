@@ -29,7 +29,7 @@ function HistorialCitasPaciente() {
     const [historialCitas, setHistorialCitas] = useState([]);
 
     useEffect(() => {
-      const idPaciente = sessionStorage.getItem('idPersona'); // Asegúrate de que este es el nombre correcto de la clave en sessionStorage
+      const idPaciente = sessionStorage.getItem('idPersona'); 
       const fetchHistorialCitas = async () => {
         try {
           const response = await axios.get('https://dbstapi.azurewebsites.net/Paciente/ObtenerHistorialCitasPaciente', {
@@ -62,10 +62,10 @@ function HistorialCitasPaciente() {
             <tbody>
               {historialCitas.map((cita, index) => (
                 <tr key={index}>
-                  <td>{cita.Medico}</td>
-                  <td>{cita.FechaHora}</td>
-                  <td>{cita.Estado}</td>
-                  <td>{cita.Costo}</td>
+                  <td>{cita.nombreEmpleado}</td>
+                  <td>{cita.fecha}</td>
+                  <td>{cita.estado}</td>
+                  <td>{cita.costo}</td>
                 </tr>
               ))}
             </tbody>

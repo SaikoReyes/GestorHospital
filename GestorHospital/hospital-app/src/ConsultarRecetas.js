@@ -29,7 +29,7 @@ function RecetasMedico() {
     const [recetas, setRecetas] = useState([]);
 
     useEffect(() => {
-      const idDoctor = sessionStorage.getItem('idDoctor'); // Reemplaza con el nombre correcto de la clave
+      const idDoctor = sessionStorage.getItem('idPersona'); 
       const fetchRecetas = async () => {
         try {
           const response = await axios.get('https://dbstapi.azurewebsites.net/Doctor/ObtenerRecetasPorIdDoctor', {
@@ -52,7 +52,7 @@ function RecetasMedico() {
             <thead>
               <tr>
                 <th>Diagnóstico</th>
-                <th>Instrucciones</th>
+                <th>Fecha</th>
                 <th>Medicamentos</th>
                 <th>Tratamiento</th>
                 <th>Nombre del Doctor</th>
@@ -63,12 +63,12 @@ function RecetasMedico() {
               {recetas.length > 0 ? (
                 recetas.map((receta, index) => (
                   <tr key={index}>
-                    <td>{receta.Diagnostico}</td>
-                    <td>{receta.Instrucciones}</td>
-                    <td>{receta.Medicamentos}</td>
-                    <td>{receta.Tratamiento}</td>
-                    <td>{receta.NombreDoctor}</td>
-                    <td>{receta.NombrePaciente}</td>
+                    <td>{receta.diagnostico}</td>
+                    <td>{receta.fecha}</td>
+                    <td>{receta.medicamentos}</td>
+                    <td>{receta.tratamiento}</td>
+                    <td>{receta.nombreMedico}</td>
+                    <td>{receta.nombrePaciente}</td>
                   </tr>
                 ))
               ) : (

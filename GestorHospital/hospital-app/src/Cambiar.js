@@ -62,9 +62,9 @@ function ScheduleAppointment() {
             setSelectedDoctor(existingAppointment.doctorId);
             setAppointmentDate(existingAppointment.date);
             setAppointmentTime(existingAppointment.time);
-            // Continúa estableciendo los demás campos necesarios
+            
           }
-      const savedUserId = sessionStorage.getItem('userId');
+      const savedUserId = sessionStorage.getItem('idPersona');
         if (savedUserId) {
           setPatientId(savedUserId);
         }
@@ -104,7 +104,7 @@ function ScheduleAppointment() {
       const doctorId = event.target.value;
       setSelectedDoctor(doctorId);
       
-      // Verificar la disponibilidad del doctor seleccionado
+      
       if (doctorId && appointmentDate) {
         checkDoctorAvailability(doctorId, appointmentDate);
       }
@@ -112,20 +112,20 @@ function ScheduleAppointment() {
 
     const checkDoctorAvailability = async (doctorId, date) => {
   try {
-    // Formatear la fecha a MM/DD/AAAA antes de enviar
+    
     const formattedDate = formatDate(date);
 
-    // Obtener citas ocupadas
+    
     const responseAppointments = await axios.get('https://dbstapi.azurewebsites.net/Paciente/ObtenerCitasDoctorPorDia', {
       params: { idDoctor: doctorId, fecha: formattedDate }
     });
 
-    // Obtener horario del doctor
+    
     const responseSchedule = await axios.get('https://dbstapi.azurewebsites.net/Paciente/ObtenerHorarioDoctor', {
       params: { idDoc: doctorId }
     });
 
-    // Filtrar las horas disponibles basándose en el horario del doctor y las citas ocupadas
+    
     setAvailableTimes(filterAvailableTimes(responseSchedule.data, responseAppointments.data, formattedDate));
   } catch (error) {
     console.error('Error al verificar la disponibilidad:', error);
@@ -139,7 +139,7 @@ function ScheduleAppointment() {
           .replace(/[\u0300-\u036f]/g, "")
           .toLowerCase();
       };
-      // Asegúrate de que la estructura de la respuesta del servidor es la esperada
+      
       const dayOfWeek = new Date(selectedDate).toLocaleString('es', { weekday: 'long' }).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,"");;
       const dailySchedule = schedule.find(day => 
         normalizeText(day.dia.toLowerCase()) === normalizeText(dayOfWeek)
@@ -153,7 +153,7 @@ function ScheduleAppointment() {
     
       let availableSlots = generateTimeSlots(dailySchedule.horaInicio, dailySchedule.horaFin);
     
-      // Filtrar las horas que ya están ocupadas
+      
       const occupiedTimes = appointments.map(appointment => appointment.hora.substring(0, 5)); // Formato HH:mm
       availableSlots = availableSlots.filter(time => !occupiedTimes.includes(time));
     
@@ -167,11 +167,11 @@ function ScheduleAppointment() {
       let current = new Date(`1970-01-01T${start}Z`);
       const endDate = new Date(`1970-01-01T${end}Z`);
     
-      // Suponiendo citas de 1 hora, ajusta según sea necesario
+      
       const appointmentDuration = 60 * 60 * 1000; 
     
       while (current < endDate) {
-        times.push(current.toISOString().substring(11, 16)); // Formato HH:mm
+        times.push(current.toISOString().substring(11, 16)); 
         current = new Date(current.getTime() + appointmentDuration);
       }
       console.log('Horas generadas:', times);
@@ -182,21 +182,21 @@ function ScheduleAppointment() {
       const newDate = e.target.value;
       setAppointmentDate(newDate);
   
-      // Verificar si la fecha no supera los 3 meses de anticipación
+      
       if (new Date(newDate) > new Date(new Date().setMonth(new Date().getMonth() + 3))) {
         alert('Por favor, elija una fecha más cercana. La anticipación máxima es de 3 meses.');
         setAppointmentDate('');
         return;
       }
   
-      // Verificar disponibilidad si ya se ha seleccionado un doctor
+      
       if (selectedDoctor) {
         checkDoctorAvailability(selectedDoctor, newDate);
       }
     };
 
     const handleAppointmentSuccess = (response) => {
-      // Suponiendo que `response` tiene la información de la cita, incluyendo el idCita
+      
       setAppointmentDetails({
         folio: response.idCita,
         patientName: patientInfo.name,
@@ -220,16 +220,16 @@ function ScheduleAppointment() {
     const handleSubmit = async (event) => {
       event.preventDefault();
     
-      // Convertir la fecha a formato MM/DD/AAAA como se indica en la imagen
+      
       const formattedDate = `${appointmentDate.split('-')[1]}/${appointmentDate.split('-')[2]}/${appointmentDate.split('-')[0]}`;
     
-      // Asegurarse de que la hora no esté ocupada y que la fecha sea válida antes de enviar
+      
       if (!availableTimes.includes(appointmentTime)) {
         alert('La hora seleccionada ya está ocupada o no es válida.');
         return;
       }
     
-      // Verificar que la fecha no exceda el límite de 3 meses de anticipación
+      
       const currentDate = new Date();
       const selectedDate = new Date(appointmentDate);
       if (selectedDate > new Date(currentDate.setMonth(currentDate.getMonth() + 3))) {
@@ -237,32 +237,32 @@ function ScheduleAppointment() {
         return;
       }
     
-      // Asumiendo que tienes los IDs necesarios y el precio en el estado
+      
       try {
         const response = await axios.get('https://dbstapi.azurewebsites.net/Paciente/AgendarCita', {
           params: {
-            idPaciente: patientId, // Asegúrate de tener este ID desde el inicio o recuperarlo de sessionStorage
+            idPaciente: patientId,
             idDoctor: selectedDoctor,
             fechaCita: formattedDate,
             horaCita: appointmentTime,
-            costo: 100 // Asegúrate de que cost sea el valor correcto a enviar
+            costo: 100 
           }
         });
     
-        // Manejar la respuesta
+        
         if (response.data) {
           alert('Cita agendada con éxito.');
-          // Aquí puedes redirigir al usuario o actualizar el estado según sea necesario
+        
         }
         try {
-          // ... llamada a la API y verificación de la respuesta ...
+        
           if (response.data) {
             handleAppointmentSuccess(response.data);
             await deletePreviousAppointment();
             alert("Datos de la cita:\n "+response.data.idCita+'\n'+response.data.nombrePaciente+'\n'+response.data.nombre+'\n'+response.data.fecha+'\n'+response.data.hora);
           }
         } catch (error) {
-          // ... manejo de errores ...
+        
           console.error('Error al agendar la cita:', error);
         }
       } catch (error) {
@@ -284,9 +284,9 @@ return (
       <Col md={12}>
         <h1 className="text-center mb-4">Agendar una Cita</h1>
         <Form onSubmit={handleSubmit}>
-          {/* Información del paciente */}
+          
           <Row className="mb-3">
-            {/* Selección de especialidad y doctor */}
+          
             <Col md={6} className="mb-3">
             <Form.Group controlId="specialtySelect">
           <Form.Label>Especialidad</Form.Label>
@@ -305,7 +305,7 @@ return (
   <Form.Control as="select" value={selectedDoctor} onChange={(e) => setSelectedDoctor(e.target.value)}>
     <option value="">Seleccione un doctor</option>
     {doctors.map(doctor => (
-      <option key={doctor.idDoctor} value={doctor.idDoctor}>{doctor.nombre}</option> // Asegúrate de usar el identificador y el nombre correctos según la respuesta de la API
+      <option key={doctor.idDoctor} value={doctor.idDoctor}>{doctor.nombre}</option>
     ))}
   </Form.Control>
 </Form.Group>
@@ -313,7 +313,7 @@ return (
             </Col>
           </Row>
 
-          {/* Selección de fecha y hora */}
+          
           <Row>
             <Col md={12} className="mb-3">
               <Form.Group controlId="dateSelect">
@@ -326,7 +326,7 @@ return (
                 <Form.Label><strong>Hora</strong></Form.Label>
                 <Form.Control as="select" value={appointmentTime} onChange={(e) => setAppointmentTime(e.target.value)}>
                   <option value="">Seleccione una hora</option>
-                  {/* Opciones de horarios disponibles */}
+                  
                   {availableTimes.map((time, index) => (
                     <option key={index} value={time}>{time}</option>
                   ))}
@@ -335,7 +335,7 @@ return (
             </Col>
           </Row>
 
-          {/* Botón para agendar cita */}
+          
           <Row>
             <Col md={12} className="text-center">
               <Button variant="primary" type="submit">Agendar Cita</Button>

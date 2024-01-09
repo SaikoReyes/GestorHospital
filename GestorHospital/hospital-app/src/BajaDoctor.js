@@ -26,9 +26,9 @@ const BottomBar = styled.footer`
 `;
 
 function DoctorList() {
-    const [specialties, setSpecialties] = useState([]); // Datos muestra para especialidades
+    const [specialties, setSpecialties] = useState([]); 
     const [selectedSpecialty, setSelectedSpecialty] = useState('');
-    const [doctors, setDoctors] = useState([]); // Datos muestra para doctores
+    const [doctors, setDoctors] = useState([]); 
     const [selectedDoctor, setSelectedDoctor] = useState('');
     const [doctorId, setDoctorId] = useState('');
 
@@ -66,20 +66,19 @@ function DoctorList() {
   const handleDeleteDoctor = async (doctorId) => {
     try {
         
-        // Realizar la solicitud al servidor
+        
         const response = await axios.get('https://dbstapi.azurewebsites.net/Bajas/DarDeBajaDoctor', {
            params: {"idDoctor": doctorId}
         });
         console.log(doctorId);
         console.log(response.data);
         if(response.data){
-        // Mostrar el mensaje de respuesta en un alert
+        
         alert(response.data);
         window.location.reload();
         }
 
-        // Actualizar la lista de doctores (opcional, dependiendo de cómo manejes el estado)
-        // Por ejemplo, podrías volver a llamar a la función que carga los doctores aquí.
+       
     } catch (error) {
         console.error('Error al eliminar al doctor:', error);
         alert('Error al intentar eliminar al doctor.');
@@ -92,7 +91,7 @@ function DoctorList() {
     <Container>
       <h1 className="text-center my-4">Buscar Doctor</h1>
 
-      {/* Formulario para buscar doctor */}
+
       <Form.Group controlId="specialtySelect">
           <Form.Label>Especialidad</Form.Label>
           <Form.Control as="select" value={selectedSpecialty} onChange={handleSpecialtyChange}>
@@ -105,7 +104,7 @@ function DoctorList() {
           </Form.Control>
         </Form.Group>
 
-      {/* Tabla con los datos del doctor */}
+      
       <Table striped bordered hover>
         <thead>
           <tr>

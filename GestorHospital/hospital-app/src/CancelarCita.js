@@ -32,7 +32,7 @@ function AppointmentList() {
 
   useEffect(() => {
     const fetchAppointments = async () => {
-      const userId = sessionStorage.getItem('userId'); // Recuperar el id del usuario guardado en sesión
+      const userId = sessionStorage.getItem('idPersona');
       if (userId) {
         try {
           const response = await axios.get('https://dbstapi.azurewebsites.net/Paciente/ObtenerCitasPaciente', {
@@ -57,7 +57,7 @@ function AppointmentList() {
       if (response.data) {
         setAlertMsg(response.data.message);
         setShowAlert(true);
-        // Actualizar la lista de citas eliminando la cita cancelada
+        
         setAppointments(appointments.filter(appointment => appointment.id !== appointmentId));
         window.location.reload();
       }

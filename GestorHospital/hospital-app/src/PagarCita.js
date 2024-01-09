@@ -25,10 +25,10 @@ const BottomBar = styled.footer`
   text-align: center;
 `;
 
-// ... Tus componentes estilizados ...
+
 
 function DoctorList() {
-  // Estados para almacenar datos y controlar la interfaz
+  
   const [appointments, setAppointments] = useState([]);
   const [patientId, setPatientId] = useState('');
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState({});
@@ -36,11 +36,11 @@ function DoctorList() {
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
 
-  // Datos para los ComboBox
+ 
   const paymentMethods = ["Efectivo", "Tarjeta de crédito"];
   const extraServices = ["Servicio 1", "Servicio 2", "Servicio 3", "Servicio 4", "Servicio 5"];
 
-  // Manejar búsqueda de citas
+ 
   const handleSearch = async () => {
     try {
       const response = await axios.get('https://dbstapi.azurewebsites.net/Paciente/ObtenerCitasPaciente', {
@@ -53,7 +53,7 @@ function DoctorList() {
     }
   };
 
-  // Manejar cambios en los ComboBox
+ 
   const handlePaymentChange = (appointmentId, method) => {
     setSelectedPaymentMethod({ ...selectedPaymentMethod, [appointmentId]: method });
   };
@@ -62,7 +62,7 @@ function DoctorList() {
     setSelectedExtraService({ ...selectedExtraService, [appointmentId]: service });
   };
 
-  // Procesar el pago
+ 
   const handlePay = async (appointmentId) => {
     try {
       const method = selectedPaymentMethod[appointmentId];

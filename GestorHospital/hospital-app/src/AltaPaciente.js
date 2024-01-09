@@ -33,7 +33,7 @@ function AltaPaciente() {
     apellidoMaterno: '',
     fechaNacimiento: '',
     curp: '',
-    nss: '', // Número de Seguridad Social
+    nss: '', 
     telefono: '',
     NombreUsuario: '',
     password: '',
@@ -73,7 +73,7 @@ function AltaPaciente() {
       }
     });
       if (response.data) {
-        // Manejar la respuesta del servidor
+        
         console.log(response.data);
         alert('Paciente registrado con éxito.');
       }
@@ -94,10 +94,9 @@ function AltaPaciente() {
         </Row>
         <Form onSubmit={handleSubmit}>
           <Row>
-            {/* Columna izquierda */}
+           
             <Col md={6}>
-              {/* Aquí irían los Form.Group para nombre, apellido paterno, etc. */}
-              {/* Ejemplo para el campo de nombre */}
+              
               <Form.Group as={Row} className="mb-3">
         <Form.Label column sm="2">Nombre</Form.Label>
         <Col sm="10">
@@ -209,12 +208,12 @@ function AltaPaciente() {
       </Form.Group>
 
               
-              {/* Repite para otros campos en la columna izquierda */}
+             
             </Col>
 
-            {/* Columna derecha */}
+            
             <Col md={6}>
-              {/* Ejemplo para el campo de especialidad */}
+              
 
       <Form.Group as={Row} className="mb-3">
         <Form.Label column sm="2">Usuario</Form.Label>

@@ -32,7 +32,7 @@ function AppointmentList() {
   
     useEffect(() => {
       const fetchAppointments = async () => {
-        const idDoctor = sessionStorage.getItem('idPersona'); // Asegúrate de que el ID del doctor esté guardado en sessionStorage
+        const idDoctor = sessionStorage.getItem('idPersona'); 
         const fecha = new Date().toISOString().split('T')[0];
         try {
           const response = await axios.get('https://dbstapi.azurewebsites.net/Paciente/ObtenerCitasDoctorPorDia', {
@@ -43,7 +43,7 @@ function AppointmentList() {
           });
           
           if (response.data) {
-            // Asumiendo que la respuesta es un array de citas como se muestra en la imagen
+            
             setAppointments(response.data.map(cita => ({
               id: cita.idCita,
               patientName: cita.nombrePaciente,
@@ -61,7 +61,7 @@ function AppointmentList() {
   
     const handleCreatePrescription = (appointmentId, idPaciente) => {
         console.log('Crear receta para la cita con id:', appointmentId, idPaciente);
-        navigate('/crear-receta', { state: { appointmentId, idPaciente }}); // Pasando idPaciente también
+        navigate('/crear-receta', { state: { appointmentId, idPaciente }}); 
       };
   return (
     <PageBackground>

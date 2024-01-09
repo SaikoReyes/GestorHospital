@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // Importar useNavigate
+import { useNavigate } from 'react-router-dom';
 import { Container, Table, Button, Alert } from 'react-bootstrap';
 import axios from 'axios';
 import styled from 'styled-components';
 
-// ... tus estilos
+
 const PageBackground = styled.div`
   background-color: #f0f8ff;
   min-height: 100vh;
@@ -31,11 +31,11 @@ function AppointmentList() {
   const [appointments, setAppointments] = useState([]);
   const [showAlert, setShowAlert] = useState(false);
   const [alertMsg, setAlertMsg] = useState('');
-  const navigate = useNavigate(); // Inicializar useNavigate
+  const navigate = useNavigate(); 
 
   useEffect(() => {
     const fetchAppointments = async () => {
-      const userId = sessionStorage.getItem('userId');
+      const userId = sessionStorage.getItem('idPersona');
       if (userId) {
         try {
           const response = await axios.get('https://dbstapi.azurewebsites.net/Paciente/ObtenerCitasPaciente', {
@@ -52,14 +52,14 @@ function AppointmentList() {
   }, []);
 
   const handleModify = (appointmentId) => {
-    // Encontrar la cita completa basada en el appointmentId
+    
     const selectedAppointment = appointments.find(appointment => appointment.idCita === appointmentId);
   
     if (selectedAppointment) {
       navigate('/cambiar', { state: { selectedAppointment } });
     } else {
       console.error('Cita no encontrada');
-      // Opcional: manejar el caso en que no se encuentre la cita
+     
     }
   };
 
