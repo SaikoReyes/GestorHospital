@@ -41,13 +41,14 @@ function AppointmentList() {
               fecha: fecha
             }
           });
-  
+          
           if (response.data) {
             // Asumiendo que la respuesta es un array de citas como se muestra en la imagen
             setAppointments(response.data.map(cita => ({
               id: cita.idCita,
               patientName: cita.nombrePaciente,
-              dateTime: cita.hora
+              dateTime: cita.hora,
+              idPaciente: cita.idPaciente
             })));
           }
         } catch (error) {
@@ -58,11 +59,10 @@ function AppointmentList() {
       fetchAppointments();
     }, []);
   
-    const handleCreatePrescription = (appointmentId) => {
-      console.log('Crear receta para la cita con id:', appointmentId);
-      navigate('/crear-receta', { state: { appointmentId }});
-    };
-
+    const handleCreatePrescription = (appointmentId, idPaciente) => {
+        console.log('Crear receta para la cita con id:', appointmentId, idPaciente);
+        navigate('/crear-receta', { state: { appointmentId, idPaciente }}); // Pasando idPaciente también
+      };
   return (
     <PageBackground>
       <TopBar>Hospital</TopBar>
@@ -77,12 +77,14 @@ function AppointmentList() {
           </tr>
         </thead>
         <tbody>
-          {appointments.map((appointment) => (
+        {appointments.map((appointment) => (
             <tr key={appointment.id}>
               <td>{appointment.patientName}</td>
               <td>{appointment.dateTime}</td>
               <td>
-                <Button variant="success" onClick={() => handleCreatePrescription(appointment.id)}>
+                <Button 
+                  variant="success" 
+                  onClick={() => handleCreatePrescription(appointment.id, appointment.idPaciente)}>
                   Crear receta
                 </Button>
               </td>

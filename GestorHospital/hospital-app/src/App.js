@@ -12,6 +12,10 @@ import CrearReceta from './CrearReceta';
 import PagarCita from './PagarCita';
 import RecAgendarCita from './RecAgendarCita';
 import BajaPaciente from './BajaPaciente';
+import ConsultarRecetas from './ConsultarRecetas';
+import HistorialCitas from './HistorialCitas';
+import ModificacionCita from './ModificacionCita';
+import Cambiar from './Cambiar';
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -34,6 +38,10 @@ function App() {
         <Route path="/pagar-cita" element={<PagarCita />} />
         <Route path="/rec-agendar-cita" element={<RecAgendarCita />} />
         <Route path="/baja-paciente" element={<BajaPaciente />} />
+        <Route path="/consultar-recetas" element={<ConsultarRecetas />} />
+        <Route path="/historial-citas" element={<HistorialCitas />} />
+        <Route path="/modificacion-citas" element={<ModificacionCita />} />
+        <Route path="/cambiar" element={<Cambiar />} />
       </Routes>
     </Router>
   );

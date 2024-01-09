@@ -69,7 +69,12 @@ const DoctorView = () => {
     <div style={styles.actionsContainer}>
       <Button variant="primary" style={styles.action} onClick={() => navigate('/completar-cita')}>Completar cita</Button>
       <p style={styles.actionDescription}>Registrar los detalles y resultados de las citas de los pacientes.</p>
+
+      <Button variant="primary" style={styles.action} onClick={() => navigate('/consultar-recetas')}>Consultar Recetas</Button>
+      <p style={styles.actionDescription}>Consultar las recetas de los pacientes.</p>
     </div>
+
+    
   );
 };
 
@@ -101,6 +106,8 @@ const ReceptionistView = () => {
 
       <Button variant="primary" style={styles.action} onClick={() => navigate('/baja-paciente')}>Baja Paciente</Button>
       <p style={styles.actionDescription}>Dar de baja un Paciente.</p>
+
+      
     </Col>
   </Row>
     </div>
@@ -117,6 +124,12 @@ const PatientView = () => {
 
       <Button variant="primary" style={styles.action} onClick={() => navigate('/cancelar-cita')}>Cancelar cita</Button>
       <p style={styles.actionDescription}>Cancelar una cita ya programada.</p>
+
+      <Button variant="primary" style={styles.action} onClick={() => navigate('/historial-citas')}>Historial de citas</Button>
+      <p style={styles.actionDescription}>Observar el historial de Citas.</p>
+
+      <Button variant="primary" style={styles.action} onClick={() => navigate('/modificacion-citas')}>Modificacion Cita</Button>
+      <p style={styles.actionDescription}>Modificar una Cita.</p>
 
       
     </div>

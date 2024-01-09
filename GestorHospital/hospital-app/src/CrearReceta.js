@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Form, Button, Row, Col } from 'react-bootstrap';
+import { Container, Form, Button, Row, Col, Alert } from 'react-bootstrap';
 import { useLocation } from 'react-router-dom';
+import axios from 'axios';
 import styled from 'styled-components'; 
 
 const PageBackground = styled.div`
@@ -26,28 +27,57 @@ const BottomBar = styled.footer`
 `;
 
 function CrearReceta() {
-  const location = useLocation();
-  const [appointmentId, setAppointmentId] = useState('');
-  const [diagnostico, setDiagnostico] = useState('');
-  const [instrucciones, setInstrucciones] = useState('');
-
-  useEffect(() => {
-    // Suponiendo que el ID de la consulta se pasa a través de los props de location.state
-    if (location.state && location.state.appointmentId) {
-      setAppointmentId(location.state.appointmentId);
-      console.log(location.state.appointmentId);
-    }
-  }, [location]);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Aquí lógica para enviar los datos al backend
-    console.log({
-      appointmentId,
-      diagnostico,
-      instrucciones
-    });
-  };
+    const location = useLocation();
+  
+    const [diagnostico, setDiagnostico] = useState('');
+    const [instrucciones, setInstrucciones] = useState('');
+    const [medicamentos, setMedicamentos] = useState('');
+    const [tratamiento, setTratamiento] = useState('');
+    const [idDoctor, setIdDoctor] = useState('');
+    const [responseMessage, setResponseMessage] = useState('');
+    const [appointmentId, setAppointmentId] = useState('');
+    const medicamentosMuestra = ["Paracetamol", "Ibuprofeno", "Amoxicilina"]; // Añade más según sea necesario
+  
+    // Obtener idPaciente de los estados anteriores
+    const [idPaciente, setIdPaciente] = useState(location.state ? location.state.idPaciente : '');
+  
+    useEffect(() => {
+      if (location.state && location.state.appointmentId && location.state.idPaciente) {
+        setAppointmentId(location.state.appointmentId);
+        setIdPaciente(location.state.idPaciente);
+        setIdDoctor(sessionStorage.getItem('userId'));
+        console.log(location.state.appointmentId);
+        console.log(location.state.idPaciente);
+        console.log(sessionStorage.getItem('userId'));
+      }
+    }, [location]);
+  
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+  
+      try {
+        const response = await axios.get('https://dbstapi.azurewebsites.net/Doctor/InsertarReceta', {
+          params: {
+            diagnostico,
+            instrucciones,
+            medicamentos,
+            tratamiento,
+            idPaciente: parseInt(idPaciente),
+            idDoctor: parseInt(idDoctor),
+          }
+        });
+        if(response.data){
+            console.log(response.data);
+            alert("Receta creada con éxito");
+            alert(diagnostico+' '+instrucciones+' '+medicamentos+' '+tratamiento);
+        }
+        
+        // Restablecer el formulario u otras acciones
+      } catch (error) {
+        console.error('Error al enviar la receta:', error);
+        alert('Error al enviar la receta');
+      }
+    };
 
   return (
     <PageBackground>
@@ -93,6 +123,30 @@ function CrearReceta() {
             </Form.Group>
           </Col>
         </Row>
+        <Row>
+            <Col md={6}>
+              <Form.Group className="mb-3">
+                <Form.Label>Medicamentos</Form.Label>
+                <Form.Control as="select" value={medicamentos} onChange={(e) => setMedicamentos(e.target.value)}>
+                  <option value="">Seleccione un medicamento</option>
+                  {medicamentosMuestra.map((medicamento, index) => (
+                    <option key={index} value={medicamento}>{medicamento}</option>
+                  ))}
+                </Form.Control>
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group className="mb-3">
+                <Form.Label>Tratamiento</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={tratamiento}
+                  onChange={(e) => setTratamiento(e.target.value)}
+                />
+              </Form.Group>
+            </Col>
+          </Row>
+        
         <div className="text-center">
           <Button variant="primary" type="submit">Crear Receta</Button>
         </div>
