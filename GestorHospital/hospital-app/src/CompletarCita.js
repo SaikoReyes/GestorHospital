@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Table, Button } from 'react-bootstrap';
-import styled from 'styled-components'; 
+import axios from 'axios';
+import styled from 'styled-components';
 
 const PageBackground = styled.div`
   background-color: #f0f8ff;
@@ -26,30 +27,41 @@ const BottomBar = styled.footer`
 `;
 
 function AppointmentList() {
-  // Datos ficticios para las citas con la estructura requerida
-  const navigate = useNavigate();
-  const [appointments, setAppointments] = useState([
-    {
-      id: 1,
-      patientName: 'Leonardo Ramos',
-      dateTime: '2022-07-20 10:00'
-    },
-    {
-      id: 2,
-      patientName: 'Daniel Leyva',
-      dateTime: '2022-07-21 10:00'
-    },
-    // ... más citas
-  ]);
-
-  const handleCreatePrescription = (appointmentId) => {
-    
-    // Aquí puedes añadir la lógica para manejar la creación de una receta,
-    // posiblemente navegando a una nueva ruta o mostrando un modal
-    
-    console.log('Crear receta para la cita con id:', appointmentId);
-    navigate('/crear-receta', { state: { appointmentId }});
-  };
+    const navigate = useNavigate();
+    const [appointments, setAppointments] = useState([]);
+  
+    useEffect(() => {
+      const fetchAppointments = async () => {
+        const idDoctor = sessionStorage.getItem('idPersona'); // Asegúrate de que el ID del doctor esté guardado en sessionStorage
+        const fecha = new Date().toISOString().split('T')[0];
+        try {
+          const response = await axios.get('https://dbstapi.azurewebsites.net/Paciente/ObtenerCitasDoctorPorDia', {
+            params: {
+              idDoctor: idDoctor,
+              fecha: fecha
+            }
+          });
+  
+          if (response.data) {
+            // Asumiendo que la respuesta es un array de citas como se muestra en la imagen
+            setAppointments(response.data.map(cita => ({
+              id: cita.idCita,
+              patientName: cita.nombrePaciente,
+              dateTime: cita.hora
+            })));
+          }
+        } catch (error) {
+          console.error('Error al obtener las citas:', error);
+        }
+      };
+  
+      fetchAppointments();
+    }, []);
+  
+    const handleCreatePrescription = (appointmentId) => {
+      console.log('Crear receta para la cita con id:', appointmentId);
+      navigate('/crear-receta', { state: { appointmentId }});
+    };
 
   return (
     <PageBackground>

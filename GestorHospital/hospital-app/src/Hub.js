@@ -6,28 +6,39 @@ import { createGlobalStyle } from 'styled-components';
 function Hub() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { username, role } = location.state || { username: 'Usuario', role: 'Invitado' };
+  const [rolId, setRolId] = useState('');
   const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString());
 
   useEffect(() => {
+    // Asegúrate de que el nombre de la propiedad coincida con lo que envías desde Login
+    const idRol = location.state?.idRol;
+    if (idRol) {
+      setRolId(idRol); // Convertir a string si es necesario, ya que los casos del switch esperan strings
+    } else {
+      // Manejar la situación en la que no hay un idRol
+      console.error('No role ID provided');
+      // Potencialmente redirigir al login si el rol es esencial
+    }
+  
     const timer = setInterval(() => {
       setCurrentTime(new Date().toLocaleTimeString());
     }, 1000);
+    
     return () => clearInterval(timer);
-  }, []);
+  }, [location.state, navigate]);
 
   const logout = () => {
     // Lógica para cerrar sesión
-    navigate('/login');
+    navigate('/');
   };
-  const renderContentBasedOnRole = (role) => {
-    switch (role) {
-      case 'Doctor':
-        return <DoctorView />;
-      case 'Recepcionista':
-        return <ReceptionistView />;
-      case 'Paciente':
+  const renderContentBasedOnRole = (rolId) => {
+    switch (rolId) {
+      case 1:
         return <PatientView />;
+      case 2:
+        return <ReceptionistView />;
+      case 3:
+          return <DoctorView />;
       default:
         return <p>No hay un rol definido</p>;
     }
@@ -48,7 +59,7 @@ function Hub() {
       <center>
       <h1>Bienvenid@ de nuevo</h1>
       <h1><p>Selecciona una opción de la lista: </p></h1></center>
-      {renderContentBasedOnRole(role)}
+      {renderContentBasedOnRole(rolId)}
     </Container>
 
   );
@@ -81,8 +92,6 @@ const ReceptionistView = () => {
 
       <Button variant="primary" style={styles.action} onClick={() => navigate('/baja-doctor')}>Baja doctor</Button>
       <p style={styles.actionDescription}>Dar de baja un doctor.</p>
-
-      {/* Agrega más botones si es necesario */}
     </div>
   );
 };
@@ -101,7 +110,6 @@ const PatientView = () => {
   );
 };
 
-// Basic inline styles
 const styles = {
   container: {
     padding: '20px',
@@ -147,10 +155,9 @@ const styles = {
     marginTop: '30px',
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center', // Centra los elementos horizontalmente
+    alignItems: 'center',
   },
   action: {
-    // ... estilos existentes para action
     marginBottom: '5px',
     transition: 'transform 0.3s',
   },
@@ -158,8 +165,8 @@ const styles = {
     fontSize: '0.9em',
     color: '#666',
     maxWidth: '200px',
-    textAlign: 'center', // Centra el texto de descripción
-    marginBottom: '20px', // Espacio entre descripción y siguiente botón
+    textAlign: 'center', 
+    marginBottom: '20px', 
   },
   footer: {
     position: 'absolute',
@@ -178,12 +185,6 @@ const styles = {
 
 };
 
-// Añade :hover a action para el efecto de agrandar
-const hoverStyles = `
-  .action:hover {
-    transform: scale(1.05);
-  }
-`;
 const GlobalStyle = createGlobalStyle`
   body {
     margin: 0;

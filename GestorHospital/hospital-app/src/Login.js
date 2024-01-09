@@ -12,21 +12,19 @@ function Login() {
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post('http://localhost:3001/login', {
-        username: username,
-        password: password,
+      const response = await axios.get(`https://dbstapi.azurewebsites.net/Login/IniciarSesion`, {
+        params: {
+          nombreUsuario: username,
+          contraseña: password
+        }
       });
       if (response.data) {
-        try{
         alert('Inicio de sesión exitoso');
-        const userId = response.data.userId;
-        sessionStorage.setItem('userId', userId);
-        const roleResponse = await axios.post(`http://localhost:3001/get-user-role/${username}`);
-        const userRole = roleResponse.data.role;
-        navigate('/hub', { state: { username: username , role: userRole }});
-        }catch (error) {
-          console.error('Error obteniendo información del usuario: ', error.response || error);
-        }
+        const { idPersona, idRol } = response.data;
+        console.log(idRol);
+        sessionStorage.setItem('idPersona', idPersona);
+        sessionStorage.setItem('idRol', idRol);
+        navigate('/hub', { state: { idUsuario: idPersona , idRol: idRol }});
       }
     } catch (error) {
       alert('Login failed: ' + (error.response ? error.response.data.message : error.message));
@@ -63,6 +61,7 @@ function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Ingrese su contraseña"
+              maxLength={255}
             />
           </Form.Group>
 

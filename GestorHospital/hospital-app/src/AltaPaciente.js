@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, navigate } from 'react';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import styled from 'styled-components'; 
+import axios from 'axios';
 
 const PageBackground = styled.div`
   background-color: #f0f8ff;
@@ -25,6 +26,7 @@ const BottomBar = styled.footer`
 `;
 
 function AltaPaciente() {
+
   const [pacienteData, setPacienteData] = useState({
     nombre: '',
     apellidoPaterno: '',
@@ -33,8 +35,9 @@ function AltaPaciente() {
     curp: '',
     nss: '', // Número de Seguridad Social
     telefono: '',
-    username: '',
+    NombreUsuario: '',
     password: '',
+    historiaMedica: ''
 
   });
 
@@ -45,11 +48,39 @@ function AltaPaciente() {
       [name]: value
     });
   };
+  const formatDate = (dateString) => {
+    const [year, month, day] = dateString.split('-');
+    return `${month}/${day}/${year}`;
+  };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Aquí manejarías la lógica para enviar los datos al backend
-    console.log(pacienteData);
+    
+    const formattedDate = formatDate(pacienteData.fechaNacimiento);
+    try {
+      const response = await axios.get(`https://dbstapi.azurewebsites.net/Registro/RegistrarNuevoPaciente`,{
+      params: {
+        curp: pacienteData.curp,
+        nombre: pacienteData.nombre,
+        apellidoPat: pacienteData.apellidoPaterno,
+        apellidoMat: pacienteData.apellidoMaterno,
+        fechaNac: formattedDate,
+        nss: pacienteData.nss,
+        telefono: pacienteData.telefono,
+        historiaMedica: pacienteData.historiaMedica,
+        nombreUsuario: pacienteData.NombreUsuario,
+        password: pacienteData.password
+      }
+    });
+      if (response.data) {
+        // Manejar la respuesta del servidor
+        console.log(response.data);
+        alert('Paciente registrado con éxito.');
+      }
+    } catch (error) {
+      console.error('Error al registrar paciente:', error.response || error);
+      alert('Fallo al registrar paciente: ' + (error.response ? error.response.data.message : error.message));
+    }
   };
 
   return (
@@ -112,14 +143,14 @@ function AltaPaciente() {
       <Form.Group as={Row} className="mb-3">
         <Form.Label column sm="2">Fecha de Nacimiento</Form.Label>
         <Col sm="10">
-            <Form.Control
+          <Form.Control
             type="date"
             name="fechaNacimiento"
             value={pacienteData.fechaNacimiento}
             onChange={handleInputChange}
-            />
+          />
         </Col>
-        </Form.Group>
+      </Form.Group>
 
       <Form.Group as={Row} className="mb-3">
         <Form.Label column sm="2">NSS</Form.Label>
@@ -144,7 +175,7 @@ function AltaPaciente() {
             name="curp"
             value={pacienteData.curp}
             onChange={handleInputChange}
-            maxLength={11} 
+            maxLength={18} 
           />
         </Col>
       </Form.Group>
@@ -163,6 +194,20 @@ function AltaPaciente() {
         </Col>
     </Form.Group>
 
+    <Form.Group as={Row} className="mb-3">
+        <Form.Label column sm="2">Historia Medica</Form.Label>
+        <Col sm="10">
+          <Form.Control
+            type="text"
+            placeholder="Historia Medica"
+            name="historiaMedica" 
+            value={pacienteData.historiaMedica}
+            onChange={handleInputChange}
+            maxLength={50} 
+          />
+        </Col>
+      </Form.Group>
+
               
               {/* Repite para otros campos en la columna izquierda */}
             </Col>
@@ -177,8 +222,8 @@ function AltaPaciente() {
           <Form.Control
             type="text"
             placeholder="Usuario"
-            name="usuario"
-            value={pacienteData.usuario}
+            name="NombreUsuario"
+            value={pacienteData.NombreUsuario}
             onChange={handleInputChange}
             maxLength={50} 
           />
@@ -191,22 +236,22 @@ function AltaPaciente() {
           <Form.Control
             type="text"
             placeholder="Contraseña"
-            name="contraseña"
-            value={pacienteData.contraseña}
+            name="password"
+            value={pacienteData.password}
             onChange={handleInputChange}
             maxLength={255} 
           />
         </Col>
       </Form.Group>
-              {/* Repite para otros campos en la columna derecha */}
-            </Col>
-          </Row>
-          {/* ... más filas y columnas según sea necesario ... */}
+
           <Row>
             <Col md={12} className="text-center">
-              <Button variant="primary" type="submit">Registrar Paciente</Button>
+              <Button variant="primary" type="submit" >Registrar Paciente</Button>
             </Col>
           </Row>
+      </Col>
+    </Row>
+          
         </Form>
       </Container>
       <BottomBar>
