@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { Container, Table, Button } from 'react-bootstrap';
-import styled from 'styled-components'; 
+import React, { useState, useEffect } from 'react';
+import { Container, Table, Button, Alert } from 'react-bootstrap';
+import axios from 'axios';
+import styled from 'styled-components';
 
 const PageBackground = styled.div`
   background-color: #f0f8ff;
@@ -25,66 +26,83 @@ const BottomBar = styled.footer`
 `;
 
 function AppointmentList() {
-  // Datos ficticios para las citas con la nueva estructura requerida
-  const [appointments, setAppointments] = useState([
-    {
-      id: 1,
-      patientName: 'Leonardo Ramos',
-      doctorName: 'Jennifer Janice Ramos',
-      specialty: 'Cardiología',
-      dateTime: '2022-07-20 10:00'
-    },
-    {
-      id: 2,
-      patientName: 'Daniel Leyva',
-      doctorName: 'Jennifer Janice Leyva',
-      specialty: 'Neurología',
-      dateTime: '2022-07-21 10:00'
-    },
-    // ... más citas
-  ]);
+  const [appointments, setAppointments] = useState([]);
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMsg, setAlertMsg] = useState('');
 
-  const handleDelete = (appointmentId) => {
-    // Llamada al backend para eliminar la cita, seguido de actualización del estado
-    // axios.delete(`/api/appointments/${appointmentId}`).then(() => {
-    setAppointments(appointments.filter(appointment => appointment.id !== appointmentId));
-    // });
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      const userId = sessionStorage.getItem('userId'); // Recuperar el id del usuario guardado en sesión
+      if (userId) {
+        try {
+          const response = await axios.get('https://dbstapi.azurewebsites.net/Paciente/ObtenerCitasPaciente', {
+            params: { idPaciente: userId }
+          });
+          setAppointments(response.data);
+        } catch (error) {
+          console.error('Error al obtener citas:', error);
+        }
+      }
+    };
+
+    fetchAppointments();
+  }, []);
+
+  const handleDelete = async (appointmentId) => {
+    try {
+      console.log(appointmentId);
+      const response = await axios.get('https://dbstapi.azurewebsites.net/Paciente/CancelarCita', {
+        params: { idCita: appointmentId }
+      });
+      if (response.data) {
+        setAlertMsg(response.data.message);
+        setShowAlert(true);
+        // Actualizar la lista de citas eliminando la cita cancelada
+        setAppointments(appointments.filter(appointment => appointment.id !== appointmentId));
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error('Error al cancelar cita:', error);
+      setAlertMsg('Error al cancelar cita. Intente nuevamente.');
+      setShowAlert(true);
+    }
   };
 
   return (
     <PageBackground>
       <TopBar>Hospital</TopBar>
-    <Container>
-      <h1 className="text-center my-4">Citas Programadas</h1>
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>Paciente</th>
-            <th>Médico</th>
-            <th>Especialidad</th>
-            <th>Fecha y Hora</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {appointments.map((appointment) => (
-            <tr key={appointment.id}>
-              <td>{appointment.patientName}</td>
-              <td>{appointment.doctorName}</td>
-              <td>{appointment.specialty}</td>
-              <td>{appointment.dateTime}</td>
-              <td>
-                <Button variant="warning" onClick={() => handleDelete(appointment.id)}>
-                  Eliminar
-                </Button>
-              </td>
+      <Container>
+        <h1 className="text-center my-4">Citas Programadas</h1>
+        {showAlert && <Alert variant="success" onClose={() => setShowAlert(false)} dismissible>{alertMsg}</Alert>}
+        <Table striped bordered hover>
+          <thead>
+            <tr>
+              <th>Médico</th>
+              <th>Fecha y Hora</th>
+              <th>Estado</th>
+              <th>Costo</th>
+              <th>Acciones</th>
             </tr>
-          ))}
-        </tbody>
-      </Table>
-    </Container>
-    <BottomBar>
-        © {new Date().getFullYear()} Hospital. Todos los derechos reservados.
+          </thead>
+          <tbody>
+            {appointments.map((appointment) => (
+              <tr key={appointment.idCita}>
+                <td>{appointment.nombreDoctor}</td>
+                <td>{`${new Date(appointment.fecha).toLocaleDateString()} ${appointment.hora}`}</td>
+                <td>{appointment.estado}</td>
+                <td>${appointment.costo}</td>
+                <td>
+                  <Button variant="danger" onClick={() => handleDelete(appointment.idCita)}>
+                    Eliminar
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </Container>
+      <BottomBar>
+          © {new Date().getFullYear()} Hospital. Todos los derechos reservados.
       </BottomBar>
     </PageBackground>
   );

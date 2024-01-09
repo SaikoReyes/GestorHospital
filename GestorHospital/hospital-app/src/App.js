@@ -9,6 +9,9 @@ import AltaDoctor from './AltaDoctor';
 import BajaDoctor from './BajaDoctor';
 import AltaPaciente from './AltaPaciente';
 import CrearReceta from './CrearReceta';
+import PagarCita from './PagarCita';
+import RecAgendarCita from './RecAgendarCita';
+import BajaPaciente from './BajaPaciente';
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -28,6 +31,9 @@ function App() {
         <Route path="/baja-doctor" element={<BajaDoctor />} />
         <Route path="/registro" element={<AltaPaciente />} />
         <Route path="/crear-receta" element={<CrearReceta />} />
+        <Route path="/pagar-cita" element={<PagarCita />} />
+        <Route path="/rec-agendar-cita" element={<RecAgendarCita />} />
+        <Route path="/baja-paciente" element={<BajaPaciente />} />
       </Routes>
     </Router>
   );

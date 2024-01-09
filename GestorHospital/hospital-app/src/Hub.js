@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Button, Container } from 'react-bootstrap';
+import { Button, Container, Row, Col } from 'react-bootstrap';
 import { createGlobalStyle } from 'styled-components';
 
 function Hub() {
@@ -10,14 +10,11 @@ function Hub() {
   const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString());
 
   useEffect(() => {
-    // Asegúrate de que el nombre de la propiedad coincida con lo que envías desde Login
     const idRol = location.state?.idRol;
     if (idRol) {
-      setRolId(idRol); // Convertir a string si es necesario, ya que los casos del switch esperan strings
+      setRolId(idRol); 
     } else {
-      // Manejar la situación en la que no hay un idRol
       console.error('No role ID provided');
-      // Potencialmente redirigir al login si el rol es esencial
     }
   
     const timer = setInterval(() => {
@@ -28,7 +25,7 @@ function Hub() {
   }, [location.state, navigate]);
 
   const logout = () => {
-    // Lógica para cerrar sesión
+
     navigate('/');
   };
   const renderContentBasedOnRole = (rolId) => {
@@ -81,17 +78,31 @@ const ReceptionistView = () => {
 
   return (
     <div style={styles.actionsContainer}>
-      <Button variant="primary" style={styles.action} onClick={() => navigate('/agendar-cita')}>Agendar cita</Button>
+     <Row>
+    {/* Columna izquierda */}
+    <Col>
+      <Button variant="primary" style={styles.action} onClick={() => navigate('/rec-agendar-cita')}>Agendar cita a paciente</Button>
       <p style={styles.actionDescription}>Programar nuevas citas para los pacientes.</p>
 
       <Button variant="primary" style={styles.action} onClick={() => navigate('/cancelar-cita')}>Cancelar cita</Button>
       <p style={styles.actionDescription}>Eliminar citas programadas previamente.</p>
 
+      <Button variant="primary" style={styles.action} onClick={() => navigate('/pagar-cita')}>Pagar cita</Button>
+      <p style={styles.actionDescription}>Pagar una cita ya programada.</p>
+    </Col>
+
+    {/* Columna derecha */}
+    <Col>
       <Button variant="primary" style={styles.action} onClick={() => navigate('/alta-doctor')}>Alta doctor</Button>
       <p style={styles.actionDescription}>Dar de alta un nuevo doctor.</p>
 
       <Button variant="primary" style={styles.action} onClick={() => navigate('/baja-doctor')}>Baja doctor</Button>
       <p style={styles.actionDescription}>Dar de baja un doctor.</p>
+
+      <Button variant="primary" style={styles.action} onClick={() => navigate('/baja-paciente')}>Baja Paciente</Button>
+      <p style={styles.actionDescription}>Dar de baja un Paciente.</p>
+    </Col>
+  </Row>
     </div>
   );
 };
@@ -106,6 +117,8 @@ const PatientView = () => {
 
       <Button variant="primary" style={styles.action} onClick={() => navigate('/cancelar-cita')}>Cancelar cita</Button>
       <p style={styles.actionDescription}>Cancelar una cita ya programada.</p>
+
+      
     </div>
   );
 };
@@ -194,8 +207,5 @@ const GlobalStyle = createGlobalStyle`
     transform: scale(1.05);
   }
 `;
-
-// Agrega el estilo de hover al componente
-
 
 export default Hub;

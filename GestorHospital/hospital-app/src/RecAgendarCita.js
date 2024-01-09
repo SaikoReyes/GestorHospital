@@ -40,7 +40,7 @@ function ScheduleAppointment() {
       time: '',
     });
     
-    const [patientId, setPatientId] = useState(null);
+    const [patientId, setPatientId] = useState('');
     const [specialties, setSpecialties] = useState([]); // Datos muestra para especialidades
     const [selectedSpecialty, setSelectedSpecialty] = useState('');
     const [doctors, setDoctors] = useState([]); // Datos muestra para doctores
@@ -49,12 +49,11 @@ function ScheduleAppointment() {
     const [appointmentTime, setAppointmentTime] = useState('');
     const [availableTimes, setAvailableTimes] = useState([]);
     const [cost, setPrice] = useState('');
+
+
     
     useEffect(() => {
-      const savedUserId = sessionStorage.getItem('userId');
-        if (savedUserId) {
-          setPatientId(savedUserId);
-        }
+      
       const fetchSpecialties = async () => {
         try {
           const response = await axios.get('https://dbstapi.azurewebsites.net/Doctor/ObtenerEspecialidades');
@@ -72,6 +71,14 @@ function ScheduleAppointment() {
       const [year, month, day] = dateString.split('-');
       return `${month}/${day}/${year}`;
     };
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        // Actualiza el estado basado en el nombre del input y el valor ingresado
+        if (name === 'IdPaciente') {
+          setPatientId(value);
+        }
+      };
   
     const handleSpecialtyChange = async (event) => {
       const specialtyId = event.target.value;
@@ -264,6 +271,21 @@ return (
           <Row className="mb-3">
             {/* Selección de especialidad y doctor */}
             <Col md={6} className="mb-3">
+            
+            <Form.Group as={Row} className="mb-3">
+              <Form.Label column sm="2">Coloque el ID del paciente</Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  type="text"
+                  placeholder="IdPaciente"
+                  name="IdPaciente"
+                  value={patientId}
+                  onChange={handleInputChange}
+                  maxLength={5} 
+                />
+              </Col>
+            </Form.Group>
+
             <Form.Group controlId="specialtySelect">
           <Form.Label>Especialidad</Form.Label>
           <Form.Control as="select" value={selectedSpecialty} onChange={handleSpecialtyChange}>
@@ -275,6 +297,7 @@ return (
             ))}
           </Form.Control>
         </Form.Group>
+
               
         <Form.Group controlId="doctorSelect" className="mt-3">
   <Form.Label><strong>Doctor</strong></Form.Label>

@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { Container, Table, Button, Form, InputGroup } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
+import { Container, Table, Col, Form, Button } from 'react-bootstrap';
+import axios from 'axios';
 import styled from 'styled-components'; 
 
 const PageBackground = styled.div`
@@ -25,18 +26,64 @@ const BottomBar = styled.footer`
 `;
 
 function DoctorList() {
-  const [doctors, setDoctors] = useState([]); // Inicialmente la lista de doctores está vacía
-  const [curp, setCurp] = useState(''); // Estado para almacenar el CURP ingresado
+    const [specialties, setSpecialties] = useState([]); // Datos muestra para especialidades
+    const [selectedSpecialty, setSelectedSpecialty] = useState('');
+    const [doctors, setDoctors] = useState([]); // Datos muestra para doctores
+    const [selectedDoctor, setSelectedDoctor] = useState('');
+    const [doctorId, setDoctorId] = useState('');
 
-  const handleSearch = () => {
-    // Aquí puedes añadir la lógica para buscar al doctor por CURP
-    // Por ejemplo, realizar una petición al backend y actualizar el estado 'doctors'
-    console.log('Buscar doctor con CURP:', curp);
-  };
+    useEffect(() => {
+        
+        const fetchSpecialties = async () => {
+          try {
+            const response = await axios.get('https://dbstapi.azurewebsites.net/Doctor/ObtenerEspecialidades');
+            console.log(response.data);
+            setSpecialties(response.data);
+          } catch (error) {
+            console.error('Error al obtener especialidades:', error);
+          }
+        };
+    
+        fetchSpecialties();
+      }, []);
 
-  const handleDeleteDoctor = (doctorId) => {
-    // Lógica para eliminar al doctor
-    console.log('Eliminar doctor con id:', doctorId);
+      const handleSpecialtyChange = async (event) => {
+        const specialtyId = event.target.value;
+        setSelectedSpecialty(specialtyId);
+        try {
+          const response = await axios.get(`https://dbstapi.azurewebsites.net/Doctor/ObtenerDoctoresPorEspecialidad`, {
+            params: { idEspecialidad: specialtyId }
+          });
+          console.log(response.data);
+          setDoctors(response.data);
+        } catch (error) {
+          console.error('Error al obtener doctores:', error);
+        }
+      };
+
+
+
+  const handleDeleteDoctor = async (doctorId) => {
+    try {
+        
+        // Realizar la solicitud al servidor
+        const response = await axios.get('https://dbstapi.azurewebsites.net/Bajas/DarDeBajaDoctor', {
+           params: {"idDoctor": doctorId}
+        });
+        console.log(doctorId);
+        console.log(response.data);
+        if(response.data){
+        // Mostrar el mensaje de respuesta en un alert
+        alert(response.data);
+        window.location.reload();
+        }
+
+        // Actualizar la lista de doctores (opcional, dependiendo de cómo manejes el estado)
+        // Por ejemplo, podrías volver a llamar a la función que carga los doctores aquí.
+    } catch (error) {
+        console.error('Error al eliminar al doctor:', error);
+        alert('Error al intentar eliminar al doctor.');
+    }
   };
 
   return (
@@ -46,34 +93,32 @@ function DoctorList() {
       <h1 className="text-center my-4">Buscar Doctor</h1>
 
       {/* Formulario para buscar doctor */}
-      <InputGroup className="mb-3">
-        <Form.Control
-          type="text"
-          placeholder="Ingrese CURP del doctor"
-          value={curp}
-          onChange={(e) => setCurp(e.target.value)}
-        />
-        <Button variant="outline-secondary" onClick={handleSearch}>
-          Buscar
-        </Button>
-      </InputGroup>
+      <Form.Group controlId="specialtySelect">
+          <Form.Label>Especialidad</Form.Label>
+          <Form.Control as="select" value={selectedSpecialty} onChange={handleSpecialtyChange}>
+            <option value="">Seleccione una especialidad</option>
+            {specialties.map(specialty => (
+              <option key={specialty.idEspecialidad} value={specialty.idEspecialidad}>
+                {specialty.nombre}
+              </option>
+            ))}
+          </Form.Control>
+        </Form.Group>
 
       {/* Tabla con los datos del doctor */}
       <Table striped bordered hover>
         <thead>
           <tr>
             <th>Nombre</th>
-            <th>Especialidad</th>
             <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
           {doctors.map((doctor) => (
-            <tr key={doctor.id}>
-              <td>{doctor.name}</td>
-              <td>{doctor.specialty}</td>
+            <tr key={doctor.idDoctor}>
+              <td>{doctor.nombre}</td>
               <td>
-                <Button variant="danger" onClick={() => handleDeleteDoctor(doctor.id)}>
+                <Button variant="danger" onClick={() => handleDeleteDoctor(doctor.idDoctor)}>
                   Eliminar
                 </Button>
               </td>
